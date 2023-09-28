@@ -1,4 +1,5 @@
 import enum
+import uuid
 from typing import Iterable, Union
 
 from django.db import models
@@ -328,8 +329,8 @@ class DjangoCudBase(Mutation):
                     new_value = cls.resolve_id(value)
                 # The order here is important
                 elif isinstance(field, models.OneToOneField):
-                    # If the value is an integer or a string, we assume it is an ID
-                    if isinstance(value, str) or isinstance(value, int):
+                    # If the value is an integer or a string or a uuid, we assume it is an ID
+                    if isinstance(value, str) or isinstance(value, int) or isinstance(value, uuid.UUID):
                         name = getattr(field, "db_column", None) or name + "_id"
                         new_value = cls.resolve_id(value)
                     else:
@@ -395,8 +396,8 @@ class DjangoCudBase(Mutation):
 
                 # Value was not transformed
                 if new_value == value:
-                    # If the value is an integer or a string, we assume it is an ID
-                    if isinstance(value, str) or isinstance(value, int):
+                    # If the value is an integer or a string or a uuid, we assume it is an ID
+                    if isinstance(value, str) or isinstance(value, int) or isinstance(value, uuid.UUID):
                         name = getattr(field, "db_column", None) or name + "_id"
                         new_value = cls.resolve_id(value)
                     else:
@@ -576,8 +577,8 @@ class DjangoCudBase(Mutation):
                 if isinstance(field, models.AutoField):
                     new_value = cls.resolve_id(value)
                 elif isinstance(field, models.OneToOneField):
-                    # If the value is an integer or a string, we assume it is an ID
-                    if isinstance(value, str) or isinstance(value, int):
+                    # If the value is an integer or a string or a uuid, we assume it is an ID
+                    if isinstance(value, str) or isinstance(value, int) or isinstance(value, uuid.UUID):
                         name = getattr(field, "db_column", None) or name + "_id"
                         new_value = cls.resolve_id(value)
                     else:
@@ -586,8 +587,8 @@ class DjangoCudBase(Mutation):
                         value[field.remote_field.name] = obj.pk
                         new_value = cls.create_or_update_one_to_one_relation(obj, field, value, extra_data, info)
                 elif isinstance(field, models.OneToOneRel):
-                    # If the value is an integer or a string, we assume it is an ID
-                    if isinstance(value, str) or isinstance(value, int):
+                    # If the value is an integer or a string or a uuid, we assume it is an ID
+                    if isinstance(value, str) or isinstance(value, int) or isinstance(value, uuid.UUID):
                         name = getattr(field, "db_column", None) or name + "_id"
                         new_value = cls.resolve_id(value)
                     else:
